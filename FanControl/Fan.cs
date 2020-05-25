@@ -35,11 +35,12 @@ namespace FanControl
             return val;
         }
 
-        public string GetRPM()
+        public int GetRPM()
         {
+            this.comm.WriteByte(0x31, this.offset);
             int val = this.comm.ReadByte(0x84);
-            val |= this.comm.ReadByte(0x84 + 1);
-            return " -> " + val;
+            val |= this.comm.ReadByte(0x84 + 1) << 8;
+            return val;
         }
 
         public void Reset()

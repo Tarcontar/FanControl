@@ -38,13 +38,13 @@
 
                 comm.AcquireLock(100);
 
-                fan.SetTargetSpeed(1);
-                fan2.SetTargetSpeed(1);
+                fan.SetTargetSpeed(0);
+                fan2.SetTargetSpeed(0);
 
                 Thread.Sleep(100);
 
-                Console.WriteLine("fan: " + fan.GetCurrentSpeed());
-                Console.WriteLine("fan2: " + fan2.GetCurrentSpeed());
+                Console.WriteLine("fan: " + fan.GetCurrentSpeed() + " " + fan.GetRPM());
+                Console.WriteLine("fan2: " + fan2.GetCurrentSpeed() + " " + fan2.GetRPM());
 
                 comm.ReleaseLock();
 

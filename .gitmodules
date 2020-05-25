@@ -1,0 +1,3 @@
+[submodule "deps/openhardwaremonitor"]
+	path = deps/openhardwaremonitor
+	url = https://github.com/Tarcontar/openhardwaremonitor.git

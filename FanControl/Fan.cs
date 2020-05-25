@@ -24,12 +24,14 @@ namespace FanControl
 
         public void SetTargetSpeed(byte speed)
         {
-            this.comm.WriteByte(WRITE_REG, speed);
+            this.comm.WriteByte(0x31, this.offset);
+            this.comm.WriteByte((byte)(WRITE_REG + this.offset), speed);
         }
 
         public int GetCurrentSpeed()
         {
-            int val = this.comm.ReadByte(READ_REG);
+            this.comm.WriteByte(0x31, this.offset);
+            int val = this.comm.ReadByte((byte)(READ_REG + this.offset));
             return val;
         }
 

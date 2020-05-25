@@ -21,11 +21,11 @@
             var comm = new EmbeddedControllerCommunicator(computer);
 
             var fan = new Fan(comm);
-            //var fan2 = new Fan(comm, 1);
+            var fan2 = new Fan(comm, 1);
 
             while (true)
             {
-                //Console.Clear();
+                Console.Clear();
                 foreach (var temp in monitor.CpuTemps)
                 {
                     Console.WriteLine(temp.Key + ": " + temp.Value);
@@ -38,13 +38,13 @@
 
                 comm.AcquireLock(100);
 
-                fan.SetTargetSpeed(3);
-                //fan2.SetTargetSpeed(7);
+                fan.SetTargetSpeed(1);
+                fan2.SetTargetSpeed(1);
 
                 Thread.Sleep(100);
 
                 Console.WriteLine("fan: " + fan.GetCurrentSpeed());
-                //Console.WriteLine("fan2: " + fan2.GetCurrentSpeed());
+                Console.WriteLine("fan2: " + fan2.GetCurrentSpeed());
 
                 comm.ReleaseLock();
 

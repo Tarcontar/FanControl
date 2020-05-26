@@ -39,6 +39,116 @@
             }
         }
 
+        public string GetCPUTemps()
+        {
+            var temps = "";
+
+            foreach (var cpu_sensors in cpuTempSensors)
+            {
+                foreach (var sensor in cpu_sensors)
+                {
+                    if (sensor.Value != null) temps += sensor.Name + ": " + (float)sensor.Value + "\n";
+                }
+            }
+
+            return temps;
+        }
+
+        public double MaxTemp()
+        {
+            var maxTemp = 0.0f;
+
+            foreach (var cpu_sensors in cpuTempSensors)
+            {
+                foreach (var sensor in cpu_sensors)
+                {
+                    if (sensor.Value != null && sensor.Value > maxTemp) maxTemp = (float)sensor.Value;
+                }
+            }
+
+            foreach (var gpu_sensors in gpuTempSensors)
+            {
+                foreach (var sensor in gpu_sensors)
+                {
+                    if (sensor.Value != null && sensor.Value > maxTemp) maxTemp = (float)sensor.Value;
+                }
+            }
+
+            return maxTemp;
+        }
+
+        public double CPUAverageTemp()
+        {
+            var sum = 0.0f;
+            var count = 0;
+
+            foreach (var cpu_sensors in cpuTempSensors)
+            {
+                foreach (var sensor in cpu_sensors)
+                {
+                    if (sensor.Value != null)
+                    {
+                        sum += (float)sensor.Value;
+                        count++;
+                    }
+                }
+            }
+
+            return sum / count;
+        }
+
+        public double GPUAverageTemp()
+        {
+            var sum = 0.0f;
+            var count = 0;
+
+            foreach (var gpu_sensors in gpuTempSensors)
+            {
+                foreach (var sensor in gpu_sensors)
+                {
+                    if (sensor.Value != null)
+                    {
+                        sum += (float)sensor.Value;
+                        count++;
+                    }
+                }
+            }
+
+            return sum / count;
+        }
+
+        public double AverageTemp()
+        {
+            var sum = 0.0f;
+            var count = 0;
+
+            foreach (var cpu_sensors in cpuTempSensors)
+            {
+                foreach (var sensor in cpu_sensors)
+                {
+                    if (sensor.Value != null)
+                    {
+                        sum += (float)sensor.Value;
+                        count++;
+                    }
+                }
+            }
+
+            foreach (var gpu_sensors in gpuTempSensors)
+            {
+                foreach (var sensor in gpu_sensors)
+                {
+                    if (sensor.Value != null)
+                    {
+                        sum += (float)sensor.Value;
+                        count++;
+                    }
+                }
+            }
+
+            return sum / count;
+        }
+
         public List<KeyValuePair<string, double>> GpuTemps
         {
             get
@@ -132,14 +242,14 @@
                 {
                     string name = s.Name.ToUpper();
 
-                    if (name.Contains("PACKAGE") || name.Contains("TOTAL"))
-                    {
-                        return new List<ISensor> { s };
-                    }
-                    else
-                    {
+                    //if (name.Contains("PACKAGE") || name.Contains("TOTAL"))
+                    //{
+                    //    return new List<ISensor> { s };
+                    //}
+                    //else
+                    //{
                         sensors.Add(s);
-                    }
+                    //}
                 }
             }
 

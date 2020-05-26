@@ -242,14 +242,15 @@
                 {
                     string name = s.Name.ToUpper();
 
-                    //if (name.Contains("PACKAGE") || name.Contains("TOTAL"))
-                    //{
-                    //    return new List<ISensor> { s };
-                    //}
-                    //else
-                    //{
+                    if (name.Contains("PACKAGE") || name.Contains("TOTAL"))
+                    {
+                        continue;
+                        //return new List<ISensor> { s };
+                    }
+                    else
+                    {
                         sensors.Add(s);
-                    //}
+                    }
                 }
             }
 

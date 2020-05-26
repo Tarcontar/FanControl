@@ -31,6 +31,9 @@
             var fan = new Fan(comm);
             var fan2 = new Fan(comm, 1);
 
+            var fan_rpm = 0;
+            var fan2_rpm = 0;
+
             while (true)
             {
                 Console.Clear();
@@ -68,10 +71,10 @@
                 }
 
                 var fan_percentage = (int)(speed / 7.0 * 100.0);
-                fan_icon.Update(fan_percentage.ToString(), ColorFromDouble(fan_percentage));
+                fan_icon.Update(fan_percentage.ToString(), ColorFromDouble(fan_percentage), fan_rpm.ToString() + " rpm");
 
                 var fan2_percentage = (int)(speed2 / 7.0 * 100.0);
-                fan2_icon.Update(fan2_percentage.ToString(), ColorFromDouble(fan2_percentage));
+                fan2_icon.Update(fan2_percentage.ToString(), ColorFromDouble(fan2_percentage), fan2_rpm.ToString() + " rpm");
 
                 cpu_icon.Update(monitor.CPUAverageTemp().ToString(), ColorFromDouble(monitor.CPUAverageTemp()));
                 gpu_icon.Update(monitor.GPUAverageTemp().ToString(), ColorFromDouble(monitor.GPUAverageTemp()));
@@ -79,15 +82,18 @@
                 comm.AcquireLock(100);
 
                 fan.SetTargetSpeed(speed);
-                fan2.SetTargetSpeed((byte)Math.Max(speed - 1, 0));
+                fan2.SetTargetSpeed(speed2);
 
                 Thread.Sleep(100);
 
                 var fanSpeed = fan.GetCurrentSpeed();
                 var fan2Speed = fan2.GetCurrentSpeed();
 
-                Console.WriteLine("fan: " + fanSpeed + " " + fan.GetRPM());
-                Console.WriteLine("fan2: " + fan2Speed + " " + fan2.GetRPM());
+                fan_rpm = fan.GetRPM();
+                fan2_rpm = fan2.GetRPM();
+
+                Console.WriteLine("fan: " + fanSpeed + " " + fan_rpm);
+                Console.WriteLine("fan2: " + fan2Speed + " " + fan2_rpm);
 
                 comm.ReleaseLock();
 
@@ -99,6 +105,7 @@
 
         private static Color ColorFromDouble(double temp)
         {
+            if (temp < 10) return Color.White;
             if (temp < 65) return Color.Green;
             if (temp < 75) return Color.Orange;
             return Color.Red;

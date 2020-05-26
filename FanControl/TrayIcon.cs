@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FanControl
@@ -17,20 +14,18 @@ namespace FanControl
         NotifyIcon icon;
         RectangleF rect;
 
+        Bitmap txt_bmp;
         Bitmap image_bmp;
         Dictionary<Color, Bitmap> colored_images = new Dictionary<Color, Bitmap>();
 
         public TrayIcon(string image)
         {
             this.icon = new NotifyIcon();
-            //this.txt_bmp = new Bitmap(WIDTH, HEIGHT);
             this.image_bmp = new Bitmap(WIDTH, HEIGHT);
+            this.txt_bmp = new Bitmap(WIDTH, HEIGHT);
             this.rect = new RectangleF(0, 0, WIDTH, HEIGHT);
 
             this.image_bmp = new Bitmap(new Bitmap(image), WIDTH, HEIGHT);
-            //colored_images[Color.Green] = ToColor(image_bmp, Color.Green);
-            //colored_images[Color.Orange] = ToColor(image_bmp, Color.Orange);
-            //colored_images[Color.Red] = ToColor(image_bmp, Color.Red);
 
             icon.BalloonTipText = "Hi tip text";
             icon.BalloonTipTitle = "Title";
@@ -53,8 +48,10 @@ namespace FanControl
 
         bool mode = false;
 
-        public void Update(string text, Color color)
+        public void Update(string text, Color color, string info_text = "")
         {
+            icon.Text = info_text;
+
             if (mode)
             {
                 if (!colored_images.ContainsKey(color))
@@ -67,17 +64,15 @@ namespace FanControl
             {
                 var brush = new SolidBrush(color);
 
-                var txt_bmp = new Bitmap(WIDTH, HEIGHT);
-                var g = Graphics.FromImage(txt_bmp);
-                //g.FillRectangle(Brushes.White, 0, 0, WIDTH, HEIGHT);
-                //g.FillRectangle(Brushes.Transparent, 0, 0, WIDTH, HEIGHT);
+                var g = Graphics.FromImage(this.txt_bmp);
+                g.Clear(Color.Transparent);
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 if (text.Length == 1) text = " " + text;
                 g.DrawString(text, new Font("Tahoma", 150), brush, rect);
                 g.Dispose();
-                this.icon.Icon = Icon.FromHandle(txt_bmp.GetHicon());
+                this.icon.Icon = Icon.FromHandle(this.txt_bmp.GetHicon());
             }
 
             mode = !mode;

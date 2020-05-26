@@ -1,6 +1,4 @@
-﻿using OpenHardwareMonitor.Hardware;
-
-namespace FanControl
+﻿namespace FanControl
 {
     public class Fan
     {

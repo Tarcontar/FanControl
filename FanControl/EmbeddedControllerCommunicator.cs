@@ -5,35 +5,19 @@ namespace FanControl
 {
     public class EmbeddedControllerCommunicator
     {
-        const byte CommandPort = 0x66;
-        const byte DataPort = 0x62;
+        const byte COMMAND_PORT = 0x66;
+        const byte DATA_PORT = 0x62;
+
+        const byte OUTPUT_BUFFER_FULL = 0x01;
+        const byte INPUT_BUFFER_FULL = 0x02;
+
+        const byte READ_COMMAND = 0x80;
+        const byte WRITE_COMMAND = 0x81;
 
         const int RWTimeout = 500;
         const int FailuresBeforeSkip = 20;
         const int MaxRetries = 5;
 
-        // See ACPI specs ch.12.2
-        enum ECStatus : byte
-        {
-            OutputBufferFull = 0x01,    // EC_OBF
-            InputBufferFull = 0x02,     // EC_IBF
-            // 0x04 is ignored
-            Command = 0x08,             // CMD
-            BurstMode = 0x10,           // BURST
-            SCIEventPending = 0x20,     // SCI_EVT
-            SMIEventPending = 0x40      // SMI_EVT
-            // 0x80 is ignored
-        }
-
-        // See ACPI specs ch.12.3
-        enum ECCommand : byte
-        {
-            Read = 0x80,            // RD_EC
-            Write = 0x81,           // WR_EC
-            BurstEnable = 0x82,     // BE_EC
-            BurstDisable = 0x83,    // BD_EC
-            Query = 0x84            // QR_EC
-        }
 
         int waitReadFailures = 0;
         private Computer computer;
@@ -82,15 +66,15 @@ namespace FanControl
 
             if (!WaitWrite()) return false;
 
-            WritePort(CommandPort, (byte)ECCommand.Read);
+            WritePort(COMMAND_PORT, READ_COMMAND);
 
             if (!WaitWrite()) return false;
 
-            WritePort(DataPort, register);
+            WritePort(DATA_PORT, register);
 
             if (!WaitWrite() || !WaitRead()) return false;
 
-            value = ReadPort(DataPort);
+            value = ReadPort(DATA_PORT);
             return true;
         }
 
@@ -98,15 +82,15 @@ namespace FanControl
         {
             if (!WaitWrite()) return false;
 
-            WritePort(CommandPort, (byte)ECCommand.Write);
+            WritePort(COMMAND_PORT, WRITE_COMMAND);
 
             if (!WaitWrite()) return false;
 
-            WritePort(DataPort, register);
+            WritePort(DATA_PORT, register);
 
             if (!WaitWrite()) return false;
 
-            WritePort(DataPort, value);
+            WritePort(DATA_PORT, value);
             return true;
         }
 
@@ -116,7 +100,7 @@ namespace FanControl
             {
                 return true;
             }
-            else if (WaitForEcStatus(ECStatus.OutputBufferFull, true))
+            else if (WaitForEcStatus(OUTPUT_BUFFER_FULL, true))
             {
                 waitReadFailures = 0;
                 return true;
@@ -128,16 +112,16 @@ namespace FanControl
             }
         }
 
-        private bool WaitWrite() => WaitForEcStatus(ECStatus.InputBufferFull, false);
+        private bool WaitWrite() => WaitForEcStatus(INPUT_BUFFER_FULL, false);
 
-        private bool WaitForEcStatus(ECStatus status, bool isSet)
+        private bool WaitForEcStatus(byte status, bool isSet)
         {
             int timeout = RWTimeout;
 
             while (timeout > 0)
             {
                 timeout--;
-                byte value = ReadPort(CommandPort);
+                byte value = ReadPort(COMMAND_PORT);
 
                 if (isSet)
                 {

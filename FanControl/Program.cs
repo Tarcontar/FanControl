@@ -26,25 +26,38 @@
             while (true)
             {
                 Console.Clear();
+                double currentMaxTemp = 60;
+
                 foreach (var temp in monitor.CpuTemps)
                 {
                     Console.WriteLine(temp.Key + ": " + temp.Value);
+                    if (temp.Value > currentMaxTemp) currentMaxTemp = temp.Value;
                 }
 
                 foreach (var temp in monitor.GpuTemps)
                 {
                     Console.WriteLine(temp.Key + ": " + temp.Value);
+                    if (temp.Value > currentMaxTemp) currentMaxTemp = temp.Value;
                 }
 
                 comm.AcquireLock(100);
 
-                fan.SetTargetSpeed(0);
-                fan2.SetTargetSpeed(0);
+                byte speed = 0;
+
+                if (currentMaxTemp > 65.0) speed = 1;
+                if (currentMaxTemp > 70.0) speed = 3;
+                if (currentMaxTemp > 78.0) speed = 7;
+
+                fan.SetTargetSpeed(speed);
+                fan2.SetTargetSpeed(speed);
 
                 Thread.Sleep(100);
 
-                Console.WriteLine("fan: " + fan.GetCurrentSpeed() + " " + fan.GetRPM());
-                Console.WriteLine("fan2: " + fan2.GetCurrentSpeed() + " " + fan2.GetRPM());
+                var fanSpeed = fan.GetCurrentSpeed();
+                var fan2Speed = fan2.GetCurrentSpeed();
+
+                Console.WriteLine("fan: " + fanSpeed + " " + fan.GetRPM());
+                Console.WriteLine("fan2: " + fan2Speed + " " + fan2.GetRPM());
 
                 comm.ReleaseLock();
 

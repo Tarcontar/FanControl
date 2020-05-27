@@ -57,24 +57,24 @@
                 //double currentTemp = monitor.MaxTemp();
                 double currentTemp = monitor.AverageTemp();
 
-                if (currentTemp > 55.0) speed = 1;
-                if (currentTemp > 65.0) speed = 2;
-                if (currentTemp > 70.0) speed = 3;
-                if (currentTemp > 75.0) speed = 4;
+                if (currentTemp > 65.0) speed = 1;
+                if (currentTemp > 70.0) speed = 2;
+                if (currentTemp > 74.0) speed = 3;
+                if (currentTemp > 78.0) speed = 4;
 
                 if (speed > 0) speed2 = (byte)(speed - 1);
 
-                if (currentTemp > 79.0 || monitor.MaxTemp() > 90)
+                if (currentTemp > 80.0 || monitor.MaxTemp() > 85)
                 {
                     speed = 7;
                     speed2 = 7;
                 }
 
                 var fan_percentage = (int)(speed / 7.0 * 100.0);
-                fan_icon.Update(fan_percentage.ToString(), ColorFromDouble(fan_percentage), fan_rpm.ToString() + " rpm");
+                fan_icon.Update(fan_percentage.ToString(), ColorFromDouble(fan_percentage), "Fan1: " + fan_rpm.ToString() + " rpm");
 
                 var fan2_percentage = (int)(speed2 / 7.0 * 100.0);
-                fan2_icon.Update(fan2_percentage.ToString(), ColorFromDouble(fan2_percentage), fan2_rpm.ToString() + " rpm");
+                fan2_icon.Update(fan2_percentage.ToString(), ColorFromDouble(fan2_percentage), "Fan2: " + fan2_rpm.ToString() + " rpm");
 
                 cpu_icon.Update(monitor.CPUAverageTemp().ToString(), ColorFromDouble(monitor.CPUAverageTemp()));
                 gpu_icon.Update(monitor.GPUAverageTemp().ToString(), ColorFromDouble(monitor.GPUAverageTemp()));

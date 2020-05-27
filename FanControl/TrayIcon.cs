@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace FanControl
 {
     public class TrayIcon
     {
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool DestroyIcon(IntPtr handle);
+
         const int WIDTH = 300;
         const int HEIGHT = 300;
 
@@ -16,7 +22,9 @@ namespace FanControl
 
         Bitmap txt_bmp;
         Bitmap image_bmp;
-        Dictionary<Color, Bitmap> colored_images = new Dictionary<Color, Bitmap>();
+        Dictionary<Color, Icon> colored_icons = new Dictionary<Color, Icon>();
+
+        Icon textIcon;
 
         public TrayIcon(string image)
         {
@@ -26,6 +34,8 @@ namespace FanControl
             this.rect = new RectangleF(0, 0, WIDTH, HEIGHT);
 
             this.image_bmp = new Bitmap(new Bitmap(image), WIDTH, HEIGHT);
+
+            
 
             icon.BalloonTipText = "Hi tip text";
             icon.BalloonTipTitle = "Title";
@@ -54,11 +64,12 @@ namespace FanControl
 
             if (mode)
             {
-                if (!colored_images.ContainsKey(color))
+
+                if (!colored_icons.ContainsKey(color))
                 {
-                    this.colored_images[color] = ToColor(image_bmp, color);
+                    this.colored_icons[color] = Icon.FromHandle(ToColor(image_bmp, color).GetHicon());
                 }
-                this.icon.Icon = Icon.FromHandle(this.colored_images[color].GetHicon());
+                this.icon.Icon = this.colored_icons[color];
             }
             else
             {
@@ -72,7 +83,11 @@ namespace FanControl
                 if (text.Length == 1) text = " " + text;
                 g.DrawString(text, new Font("Tahoma", 150), brush, rect);
                 g.Dispose();
-                this.icon.Icon = Icon.FromHandle(this.txt_bmp.GetHicon());
+                var ico = Icon.FromHandle(this.txt_bmp.GetHicon());
+
+                this.icon.Icon = ico;
+
+                DestroyIcon(ico.Handle);
             }
 
             mode = !mode;

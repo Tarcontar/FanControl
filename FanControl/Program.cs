@@ -3,9 +3,7 @@
     using OpenHardwareMonitor.Hardware;
     using System;
     using System.Drawing;
-    using System.Drawing.Drawing2D;
     using System.Threading;
-    using System.Windows.Forms;
 
     class Program
     {
@@ -43,12 +41,12 @@
 
                 foreach (var temp in monitor.CpuTemps)
                 {
-                    Console.WriteLine(temp.Key + ": " + temp.Value);
+                    Console.WriteLine(temp.Key + ": " + (int)temp.Value);
                 }
 
                 foreach (var temp in monitor.GpuTemps)
                 {
-                    Console.WriteLine(temp.Key + ": " + temp.Value);
+                    Console.WriteLine(temp.Key + ": " + (int)temp.Value);
                 }
 
                 byte speed = 0;
@@ -99,8 +97,6 @@
 
                 Thread.Sleep(3000);
             }
-
-            Console.ReadLine();
         }
 
         private static Color ColorFromDouble(double temp)

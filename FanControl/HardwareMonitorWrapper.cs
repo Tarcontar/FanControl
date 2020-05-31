@@ -54,7 +54,7 @@
             return temps;
         }
 
-        public double MaxTemp()
+        public int MaxTemp()
         {
             var maxTemp = 0.0f;
 
@@ -74,10 +74,10 @@
                 }
             }
 
-            return maxTemp;
+            return (int)maxTemp;
         }
 
-        public double CPUAverageTemp()
+        public int CPUAverageTemp()
         {
             var sum = 0.0f;
             var count = 0;
@@ -94,10 +94,10 @@
                 }
             }
 
-            return sum / count;
+            return (int)(sum / count);
         }
 
-        public double GPUAverageTemp()
+        public int GPUAverageTemp()
         {
             var sum = 0.0f;
             var count = 0;
@@ -114,10 +114,10 @@
                 }
             }
 
-            return sum / count;
+            return (int)(sum / count);
         }
 
-        public double AverageTemp()
+        public int AverageTemp()
         {
             var sum = 0.0f;
             var count = 0;
@@ -146,7 +146,7 @@
                 }
             }
 
-            return sum / count;
+            return (int)(sum / count);
         }
 
         public List<KeyValuePair<string, double>> GpuTemps

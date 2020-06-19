@@ -79,7 +79,9 @@
 
                 comm.AcquireLock(100);
 
+                Thread.Sleep(10);
                 fan.SetTargetSpeed(speed);
+                Thread.Sleep(10);
                 fan2.SetTargetSpeed(speed2);
 
                 Thread.Sleep(100);

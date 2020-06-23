@@ -36,7 +36,7 @@
             {
                 Console.Clear();
 
-                Console.WriteLine("Max: " + monitor.MaxTemp() + " Avg: " + monitor.AverageTemp());
+                Console.WriteLine("Max: " + monitor.MaxTemp() + " Avg: " + monitor.CPUAverageTemp());
                 Console.WriteLine(monitor.GetCPUTemps());
 
                 foreach (var temp in monitor.CpuTemps)
@@ -53,18 +53,23 @@
                 byte speed2 = 0;
 
                 //double currentTemp = monitor.MaxTemp();
-                double currentTemp = monitor.AverageTemp();
+                double currentTemp = monitor.CPUAverageTemp();
 
-                if (currentTemp > 65.0) speed = 1;
-                if (currentTemp > 70.0) speed = 2;
-                if (currentTemp > 74.0) speed = 3;
-                if (currentTemp > 78.0) speed = 4;
+                if (currentTemp > 60.0) speed = 1;
+                if (currentTemp > 63.0) speed = 2;
+                if (currentTemp > 68.0) speed = 3;
+                if (currentTemp > 72.0) speed = 4;
+                if (currentTemp > 75.0) speed = 5;
 
-                if (speed > 0) speed2 = (byte)(speed - 1);
-
-                if (currentTemp > 80.0 || monitor.MaxTemp() > 85)
+                if (currentTemp > 78.0 || monitor.MaxTemp() > 85)
                 {
                     speed = 7;
+                }
+
+                speed2 = speed;
+
+                if (monitor.GPUAverageTemp() > 78)
+                {
                     speed2 = 7;
                 }
 
@@ -79,9 +84,10 @@
 
                 comm.AcquireLock(100);
 
-                Thread.Sleep(10);
+                Thread.Sleep(100);
+                //speed = 7;
+                //speed2 = 7;
                 fan.SetTargetSpeed(speed);
-                Thread.Sleep(10);
                 fan2.SetTargetSpeed(speed2);
 
                 Thread.Sleep(100);
@@ -104,7 +110,7 @@
         private static Color ColorFromDouble(double temp)
         {
             if (temp < 10) return Color.White;
-            if (temp < 65) return Color.Green;
+            if (temp < 70) return Color.Green;
             if (temp < 75) return Color.Orange;
             return Color.Red;
         }
